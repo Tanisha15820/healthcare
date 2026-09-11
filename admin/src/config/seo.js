@@ -18,25 +18,3 @@ export const SITE_CONFIG = {
   contactPhone: "", // Add contact phone if available
   contactEmail: "", // Add contact email if available
 };
-
-export const ORGANIZATION_SCHEMA = {
-  "@context": "https://schema.org",
-  "@type": ["MedicalBusiness", "EquipmentRentalAgency"],
-  "name": SITE_CONFIG.siteName,
-  "url": SITE_CONFIG.domain,
-  "logo": `${SITE_CONFIG.domain}/favicon.svg`,
-  "description": SITE_CONFIG.defaultDescription,
-  "priceRange": "$$",
-  "knowsAbout": [
-    "Medical Equipment Rental",
-    "Urology Equipment",
-    "Hospital Machinery Leasing",
-    "Healthcare Services for Doctors and Hospitals"
-  ],
-  "medicalSpecialty": "Hospital Services",
-  "areaServed": "India",
-  "targetAudience": {
-    "@type": "Audience",
-    "audienceType": "Hospitals, Clinics, Doctors, Medical Professionals"
-  }
-};

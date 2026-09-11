@@ -1,17 +1,10 @@
-// Simple localStorage Authentication for RHS Admin
-
 const AUTH_STORAGE_KEY = "rhs_admin_auth";
 
-// Default admin credentials
 export const DEFAULT_CREDENTIALS = {
   username: "admin",
   password: "admin123",
 };
 
-/**
- * Check if the current user is authenticated
- * @returns {boolean}
- */
 export const isAuthenticated = () => {
   try {
     const raw = localStorage.getItem(AUTH_STORAGE_KEY);
@@ -24,10 +17,6 @@ export const isAuthenticated = () => {
   }
 };
 
-/**
- * Get current authenticated admin user data
- * @returns {object|null}
- */
 export const getAdminUser = () => {
   try {
     const raw = localStorage.getItem(AUTH_STORAGE_KEY);
@@ -38,12 +27,6 @@ export const getAdminUser = () => {
   }
 };
 
-/**
- * Attempt login with username and password
- * @param {string} username 
- * @param {string} password 
- * @returns {{success: boolean, message?: string}}
- */
 export const login = (username, password) => {
   const trimmedUser = (username || "").trim();
   const trimmedPass = (password || "").trim();
@@ -52,7 +35,6 @@ export const login = (username, password) => {
     return { success: false, message: "Please enter both username and password." };
   }
 
-  // Check against default credentials
   if (
     trimmedUser.toLowerCase() === DEFAULT_CREDENTIALS.username.toLowerCase() &&
     trimmedPass === DEFAULT_CREDENTIALS.password
@@ -72,9 +54,6 @@ export const login = (username, password) => {
   return { success: false, message: "Invalid username or password. Please try again." };
 };
 
-/**
- * Logout and clear session
- */
 export const logout = () => {
   localStorage.removeItem(AUTH_STORAGE_KEY);
   window.dispatchEvent(new Event("rhs_auth_changed"));

@@ -1,4 +1,3 @@
-// LocalStorage manager for Blogs CRUD
 import blogImg1 from "../assets/images/blog_3.png";
 import blogImg2 from "../assets/images/blog_2.png";
 import blogImg3 from "../assets/images/blog_1.png";
@@ -12,13 +11,6 @@ export const BLOG_IMAGE_PRESETS = [
   { id: "blog_1", label: "Checklist / Procurement (blog_1)", src: blogImg3 },
   { id: "blog_4", label: "Turnaround / OT (blog_4)", src: blogImg4 },
 ];
-
-export const BLOG_PRESET_MAP = {
-  blog_3: blogImg1,
-  blog_2: blogImg2,
-  blog_1: blogImg3,
-  blog_4: blogImg4,
-};
 
 export const DEFAULT_BLOGS = [
   {
@@ -67,29 +59,16 @@ export const DEFAULT_BLOGS = [
   },
 ];
 
-export const getResolvedBlogImage = (blog) => {
-  if (blog?.image && typeof blog.image === "string" && blog.image.trim() !== "") {
-    return blog.image;
-  }
-  if (blog?.presetKey && BLOG_PRESET_MAP[blog.presetKey]) {
-    return BLOG_PRESET_MAP[blog.presetKey];
-  }
-  return blogImg1;
-};
-
 export const getAllBlogs = () => {
   try {
     const raw = localStorage.getItem(BLOGS_STORAGE_KEY);
-    if (!raw) {
-      localStorage.setItem(BLOGS_STORAGE_KEY, JSON.stringify(DEFAULT_BLOGS));
-      return DEFAULT_BLOGS;
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
     }
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed) || parsed.length === 0) {
-      localStorage.setItem(BLOGS_STORAGE_KEY, JSON.stringify(DEFAULT_BLOGS));
-      return DEFAULT_BLOGS;
-    }
-    return parsed;
+    return DEFAULT_BLOGS;
   } catch (err) {
     console.warn("Failed reading blogs from localStorage, falling back to defaults:", err);
     return DEFAULT_BLOGS;

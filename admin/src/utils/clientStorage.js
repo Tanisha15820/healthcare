@@ -1,5 +1,3 @@
-// LocalStorage manager for Homepage Clients CRUD
-
 export const CLIENTS_STORAGE_KEY = "rhs_clients_v1";
 
 export const CLIENT_ACCENT_OPTIONS = [
@@ -70,20 +68,14 @@ export const DEFAULT_CLIENTS = [
   },
 ];
 
-/**
- * Retrieve all clients from localStorage
- * @returns {Array}
- */
 export const getAllClients = () => {
   try {
     const raw = localStorage.getItem(CLIENTS_STORAGE_KEY);
-    if (!raw) {
-      localStorage.setItem(CLIENTS_STORAGE_KEY, JSON.stringify(DEFAULT_CLIENTS));
-      return DEFAULT_CLIENTS;
-    }
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) {
-      return parsed;
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
     }
     return DEFAULT_CLIENTS;
   } catch (error) {
@@ -92,11 +84,6 @@ export const getAllClients = () => {
   }
 };
 
-/**
- * Save updated clients list to localStorage and dispatch update event
- * @param {Array} clients
- * @returns {boolean}
- */
 export const saveAllClients = (clients) => {
   try {
     localStorage.setItem(CLIENTS_STORAGE_KEY, JSON.stringify(clients));
@@ -110,11 +97,6 @@ export const saveAllClients = (clients) => {
   }
 };
 
-/**
- * Add a new client card
- * @param {object} item
- * @returns {Array} updated clients
- */
 export const addClient = (item) => {
   const current = getAllClients();
   const newItem = {
@@ -131,12 +113,6 @@ export const addClient = (item) => {
   return updated;
 };
 
-/**
- * Update an existing client by ID
- * @param {string} id
- * @param {object} updatedFields
- * @returns {Array} updated clients
- */
 export const updateClient = (id, updatedFields) => {
   const current = getAllClients();
   const updated = current.map((item) =>
@@ -146,11 +122,6 @@ export const updateClient = (id, updatedFields) => {
   return updated;
 };
 
-/**
- * Delete a client by ID
- * @param {string} id
- * @returns {{success: boolean, message?: string, clients: Array}}
- */
 export const deleteClient = (id) => {
   const current = getAllClients();
   if (current.length <= 1) {
@@ -168,10 +139,6 @@ export const deleteClient = (id) => {
   };
 };
 
-/**
- * Reset clients to defaults
- * @returns {Array}
- */
 export const resetClients = () => {
   try {
     localStorage.removeItem(CLIENTS_STORAGE_KEY);

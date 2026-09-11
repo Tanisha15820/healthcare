@@ -1,15 +1,12 @@
-import { useState } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import PeopleOutlineOutlinedIcon from "@mui/icons-material/PeopleOutlineOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
@@ -28,12 +25,14 @@ const AdminLogin = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Redirect if already logged in
-  if (isAuthenticated()) {
-    const destination = location.state?.from?.pathname || "/dashboard";
+  // Redirect to the dashboard if already logged in
+  useEffect(() => {
+    if (isAuthenticated()) {
+      const destination = location.state?.from?.pathname || "/dashboard";
 
-    navigate(destination, { replace: true });
-  }
+      navigate(destination, { replace: true });
+    }
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();

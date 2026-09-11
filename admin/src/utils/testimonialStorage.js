@@ -1,5 +1,3 @@
-// LocalStorage manager for Homepage Testimonials CRUD
-
 export const TESTIMONIALS_STORAGE_KEY = "rhs_testimonials_v1";
 
 export const TESTIMONIAL_BG_OPTIONS = [
@@ -62,20 +60,14 @@ export const DEFAULT_TESTIMONIALS = [
   },
 ];
 
-/**
- * Retrieve all testimonials from localStorage
- * @returns {Array}
- */
 export const getAllTestimonials = () => {
   try {
     const raw = localStorage.getItem(TESTIMONIALS_STORAGE_KEY);
-    if (!raw) {
-      localStorage.setItem(TESTIMONIALS_STORAGE_KEY, JSON.stringify(DEFAULT_TESTIMONIALS));
-      return DEFAULT_TESTIMONIALS;
-    }
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) {
-      return parsed;
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
     }
     return DEFAULT_TESTIMONIALS;
   } catch (error) {
@@ -84,11 +76,6 @@ export const getAllTestimonials = () => {
   }
 };
 
-/**
- * Save updated testimonials list to localStorage and dispatch update event
- * @param {Array} testimonials
- * @returns {boolean}
- */
 export const saveAllTestimonials = (testimonials) => {
   try {
     localStorage.setItem(TESTIMONIALS_STORAGE_KEY, JSON.stringify(testimonials));
@@ -102,11 +89,6 @@ export const saveAllTestimonials = (testimonials) => {
   }
 };
 
-/**
- * Add a new testimonial
- * @param {object} item
- * @returns {Array} updated testimonials
- */
 export const addTestimonial = (item) => {
   const current = getAllTestimonials();
   const newItem = {
@@ -122,12 +104,6 @@ export const addTestimonial = (item) => {
   return updated;
 };
 
-/**
- * Update an existing testimonial by ID
- * @param {string} id
- * @param {object} updatedFields
- * @returns {Array} updated testimonials
- */
 export const updateTestimonial = (id, updatedFields) => {
   const current = getAllTestimonials();
   const updated = current.map((item) =>
@@ -137,11 +113,6 @@ export const updateTestimonial = (id, updatedFields) => {
   return updated;
 };
 
-/**
- * Delete a testimonial by ID
- * @param {string} id
- * @returns {{success: boolean, message?: string, testimonials: Array}}
- */
 export const deleteTestimonial = (id) => {
   const current = getAllTestimonials();
   if (current.length <= 1) {
@@ -159,15 +130,13 @@ export const deleteTestimonial = (id) => {
   };
 };
 
-/**
- * Reset testimonials to defaults
- * @returns {Array}
- */
 export const resetTestimonials = () => {
   try {
     localStorage.removeItem(TESTIMONIALS_STORAGE_KEY);
     window.dispatchEvent(
-      new CustomEvent("rhs_testimonials_updated", { detail: DEFAULT_TESTIMONIALS })
+      new CustomEvent("rhs_testimonials_updated", {
+        detail: DEFAULT_TESTIMONIALS,
+      })
     );
     return DEFAULT_TESTIMONIALS;
   } catch (error) {

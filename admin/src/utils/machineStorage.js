@@ -1,66 +1,4 @@
-// LocalStorage manager for Interactive Machine & Machine Products
-
-export const INTERACTIVE_MACHINE_KEY = "rhs_interactive_machine_v1";
 export const MACHINE_PRODUCTS_KEY = "rhs_machine_products_v1";
-
-export const DEFAULT_INTERACTIVE_MACHINE = {
-  machineImage: "", // empty means use default machine.png
-  title: "Advanced Medical Machine & Healthcare Equipment Rental",
-  subtitle: "Interactive showcase of high-performance medical machinery available for rental to hospitals and surgical clinics.",
-  badgeText: "High-Performance Medical Technology",
-  parts: [
-    {
-      id: "display",
-      title: "Advanced Touch Display",
-      description:
-        "High-resolution touch display provides clear real-time monitoring and intuitive system control.",
-      icon: "Monitor",
-      top: "13%",
-      left: "51%",
-      cardPosition: "right",
-    },
-    {
-      id: "control",
-      title: "Control System",
-      description:
-        "Easy-to-use control interface designed for precise operation and quick access to essential settings.",
-      icon: "Settings2",
-      top: "27%",
-      left: "50%",
-      cardPosition: "left",
-    },
-    {
-      id: "tray",
-      title: "Integrated Storage Tray",
-      description:
-        "Convenient integrated tray provides additional space for essential accessories during procedures.",
-      icon: "Package",
-      top: "48%",
-      left: "50%",
-      cardPosition: "right",
-    },
-    {
-      id: "stand",
-      title: "Adjustable Stand",
-      description:
-        "Stable height-adjustable structure designed for comfortable positioning and efficient workflow.",
-      icon: "Move",
-      top: "68%",
-      left: "50%",
-      cardPosition: "left",
-    },
-    {
-      id: "base",
-      title: "Stable Mobile Base",
-      description:
-        "Strong wheeled base provides stability while allowing smooth movement of the equipment.",
-      icon: "Move",
-      top: "88%",
-      left: "50%",
-      cardPosition: "right",
-    },
-  ],
-};
 
 export const DEFAULT_MACHINE_PRODUCTS = [
   {
@@ -137,7 +75,6 @@ export const DEFAULT_MACHINE_PRODUCTS = [
   },
 ];
 
-// Color theme presets for products
 export const THEME_PRESETS = [
   {
     id: "purple",
@@ -177,112 +114,15 @@ export const THEME_PRESETS = [
   },
 ];
 
-// ================= 1. INTERACTIVE SHOWCASE MACHINE METHODS =================
-
-export const getInteractiveMachineData = () => {
-  try {
-    const raw = localStorage.getItem(INTERACTIVE_MACHINE_KEY);
-    if (!raw) return { ...DEFAULT_INTERACTIVE_MACHINE };
-    const parsed = JSON.parse(raw);
-    return {
-      ...DEFAULT_INTERACTIVE_MACHINE,
-      ...parsed,
-      parts: Array.isArray(parsed.parts) ? parsed.parts : DEFAULT_INTERACTIVE_MACHINE.parts,
-    };
-  } catch (err) {
-    console.error("Error loading interactive machine data:", err);
-    return { ...DEFAULT_INTERACTIVE_MACHINE };
-  }
-};
-
-export const saveInteractiveMachineData = (data) => {
-  try {
-    localStorage.setItem(INTERACTIVE_MACHINE_KEY, JSON.stringify(data));
-    window.dispatchEvent(
-      new CustomEvent("rhs_machines_updated", { detail: { type: "interactive", data } })
-    );
-    return true;
-  } catch (err) {
-    console.error("Error saving interactive machine data:", err);
-    return false;
-  }
-};
-
-export const addMachineHotspot = (hotspot) => {
-  const current = getInteractiveMachineData();
-  const newPart = {
-    id: `part-${Date.now()}`,
-    title: hotspot.title || "New Feature Point",
-    description: hotspot.description || "Feature description for this medical machine part.",
-    icon: hotspot.icon || "Sparkles",
-    top: hotspot.top || "50%",
-    left: hotspot.left || "50%",
-    cardPosition: hotspot.cardPosition || "right",
-  };
-  const updated = {
-    ...current,
-    parts: [...current.parts, newPart],
-  };
-  saveInteractiveMachineData(updated);
-  return updated;
-};
-
-export const updateMachineHotspot = (id, updatedFields) => {
-  const current = getInteractiveMachineData();
-  const updatedParts = current.parts.map((p) =>
-    p.id === id ? { ...p, ...updatedFields } : p
-  );
-  const updated = {
-    ...current,
-    parts: updatedParts,
-  };
-  saveInteractiveMachineData(updated);
-  return updated;
-};
-
-export const deleteMachineHotspot = (id) => {
-  const current = getInteractiveMachineData();
-  if (current.parts.length <= 1) {
-    return {
-      success: false,
-      message: "At least one hotspot point must remain on the machine.",
-      data: current,
-    };
-  }
-  const updated = {
-    ...current,
-    parts: current.parts.filter((p) => p.id !== id),
-  };
-  saveInteractiveMachineData(updated);
-  return {
-    success: true,
-    data: updated,
-  };
-};
-
-export const resetInteractiveMachineData = () => {
-  try {
-    localStorage.removeItem(INTERACTIVE_MACHINE_KEY);
-    window.dispatchEvent(
-      new CustomEvent("rhs_machines_updated", {
-        detail: { type: "interactive", data: DEFAULT_INTERACTIVE_MACHINE },
-      })
-    );
-    return { ...DEFAULT_INTERACTIVE_MACHINE };
-  } catch (err) {
-    console.error("Error resetting interactive machine data:", err);
-    return { ...DEFAULT_INTERACTIVE_MACHINE };
-  }
-};
-
-// ================= 2. MACHINE PRODUCTS CATALOG METHODS =================
-
 export const getMachineProducts = () => {
   try {
     const raw = localStorage.getItem(MACHINE_PRODUCTS_KEY);
-    if (!raw) return DEFAULT_MACHINE_PRODUCTS;
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
     return DEFAULT_MACHINE_PRODUCTS;
   } catch (err) {
     console.error("Error loading machine products:", err);
@@ -294,7 +134,9 @@ export const saveMachineProducts = (products) => {
   try {
     localStorage.setItem(MACHINE_PRODUCTS_KEY, JSON.stringify(products));
     window.dispatchEvent(
-      new CustomEvent("rhs_machines_updated", { detail: { type: "products", data: products } })
+      new CustomEvent("rhs_machines_updated", {
+        detail: { type: "products", data: products },
+      })
     );
     return true;
   } catch (err) {

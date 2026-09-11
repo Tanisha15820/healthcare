@@ -1,5 +1,3 @@
-// LocalStorage manager for Homepage FAQ Q&A CRUD
-
 export const FAQS_STORAGE_KEY = "rhs_faqs_v1";
 
 export const FAQ_ICON_OPTIONS = [
@@ -58,20 +56,14 @@ export const DEFAULT_FAQS = [
   },
 ];
 
-/**
- * Retrieve all FAQs from localStorage
- * @returns {Array}
- */
 export const getAllFaqs = () => {
   try {
     const raw = localStorage.getItem(FAQS_STORAGE_KEY);
-    if (!raw) {
-      localStorage.setItem(FAQS_STORAGE_KEY, JSON.stringify(DEFAULT_FAQS));
-      return DEFAULT_FAQS;
-    }
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) {
-      return parsed;
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
     }
     return DEFAULT_FAQS;
   } catch (error) {
@@ -80,11 +72,6 @@ export const getAllFaqs = () => {
   }
 };
 
-/**
- * Save updated FAQs list to localStorage and dispatch update event
- * @param {Array} faqs
- * @returns {boolean}
- */
 export const saveAllFaqs = (faqs) => {
   try {
     localStorage.setItem(FAQS_STORAGE_KEY, JSON.stringify(faqs));
@@ -98,11 +85,6 @@ export const saveAllFaqs = (faqs) => {
   }
 };
 
-/**
- * Add a new FAQ item
- * @param {object} item
- * @returns {Array} updated FAQs
- */
 export const addFaq = (item) => {
   const current = getAllFaqs();
   const newItem = {
@@ -116,12 +98,6 @@ export const addFaq = (item) => {
   return updated;
 };
 
-/**
- * Update an existing FAQ by ID
- * @param {string} id
- * @param {object} updatedFields
- * @returns {Array} updated FAQs
- */
 export const updateFaq = (id, updatedFields) => {
   const current = getAllFaqs();
   const updated = current.map((item) =>
@@ -131,11 +107,6 @@ export const updateFaq = (id, updatedFields) => {
   return updated;
 };
 
-/**
- * Delete an FAQ by ID
- * @param {string} id
- * @returns {{success: boolean, message?: string, faqs: Array}}
- */
 export const deleteFaq = (id) => {
   const current = getAllFaqs();
   if (current.length <= 1) {
@@ -153,10 +124,6 @@ export const deleteFaq = (id) => {
   };
 };
 
-/**
- * Reset FAQs to defaults
- * @returns {Array}
- */
 export const resetFaqs = () => {
   try {
     localStorage.removeItem(FAQS_STORAGE_KEY);
